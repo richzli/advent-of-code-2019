@@ -1,24 +1,25 @@
 #include <cstdio>
+#include <iostream>
 #include <cmath>
 #include <iostream>
 #include <vector>
-#include <list>
 #include <string>
+#include <sstream>
+#include <algorithm>
 using namespace std;
 
 #define vi vector<int>
-#define pii pair<int, int>
 
 //                     1  2  3  4  5  6  7  8
 const int lens[] = {0, 3, 3, 1, 1, 2, 2, 3, 3};
 
-vector<pair<vi, int>> instances;
-list<int> inputs;
+vi ops;
+vi inputs;
 
 #define oa(i) ops.at(i)
 
-vi read() {
-    vi ops;
+void read() {
+    ops = vi();
 
     string input;
     getline(cin, input);
@@ -29,11 +30,9 @@ vi read() {
         input.erase(0, i+1);
     }
     ops.push_back(stoi(input));
-
-    return ops;
 }
 
-int get(vi ops, int mode, int i) {
+int get(int mode, int i) {
     if (mode == 0) {
         return oa(i);
     } else if (mode == 1) {
@@ -42,9 +41,8 @@ int get(vi ops, int mode, int i) {
     return -1;
 }
 
-int run(pair<vi, int> instance) {
-    vi ops = instance.first;
-    int index = instance.second;
+int run() {
+    int index = 0;
 
     while (ops.at(index) % 100 != 99) {
         int instruction = ops.at(index);
@@ -53,29 +51,29 @@ int run(pair<vi, int> instance) {
 
         int modes[len];
         for (int i = 0; i < len; ++i) {
-            modes[i] = (instruction / ((int) pow(10, i+2))) % 10;
+            modes[i] = (instruction / ((int) pow(10, i+2))) % 10;  
         }
         
         int params[len];
         for (int i = 0; i < len; ++i) {
-            params[i] = get(ops, modes[i], index+i+1);
+            params[i] = get(modes[i], index+i+1);
         }
-        
+
         index += 1 + len;
         if (op == 1) {
             oa(params[2]) = oa(params[0]) + oa(params[1]);
         } else if (op == 2) {
             oa(params[2]) = oa(params[0]) * oa(params[1]);
         } else if (op == 3) {
-            int input = inputs.front();
-            inputs.pop_front();
+            int input;
+            input = inputs.at(0);
+            inputs.erase(inputs.begin());
+            // printf("%d ", input);
             oa(params[0]) = input;
         } else if (op == 4) {
-            instance.first = ops;
-            instance.second = index;
             return oa(params[0]);
         } else if (op == 5) {
-            if (oa(params[0]) != 0) {
+            if (oa(params[0]) != 0) {            
                 index = oa(params[1]);
             }
         } else if (op == 6) {
@@ -96,15 +94,29 @@ int run(pair<vi, int> instance) {
             }
         }
     }
-    return -1;
 }
 
 int main() {
-    instances.push_back(pair<vi, int>(read(), 0));
+    read();
+    vi permops = ops;
+    int powers[] {0, 1, 2, 3, 4};
 
-    inputs.push_back(7);
+    int maxpower = 0;
 
-    int output = run(instances.at(0));
+    do {
+        int power = 0;
+        for (int i : powers) {
+            inputs.push_back(i);
+            inputs.push_back(power);
 
-    printf("%d\n", output);
+            power = run();
+        }
+        
+        if (maxpower < power) {
+            maxpower = power;
+        }
+
+        ops = permops;
+    } while (next_permutation(powers, powers + 5));
+    printf("%d\n", maxpower);
 }
