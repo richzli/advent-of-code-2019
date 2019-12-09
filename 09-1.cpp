@@ -60,24 +60,32 @@ long long get_param(vi& ops, int mode, int i, int base) {
     return -1;
 }
 
-pair<int, long long> run(tviii& instance) {
+long long run(tviii& instance) {
     vi& ops = get<0>(instance);
     long long index = get<1>(instance);
     long long base = get<2>(instance);
 
-    while (oa(index) % 100 != 99) {
+    while (ops.at(index) % 100 != 99) {
         long long instruction = ops.at(index);
         int op = int(instruction % 100);
         int len = lens[op];
 
+        cout << "(" << instruction << " at " << index << ")" << endl;
+
         int modes[len];
         for (int i = 0; i < len; ++i) {
-            modes[i] = (instruction / (int (pow(10, i+2)+0.5))) % 10;
+            modes[i] = (instruction / ((int) (pow(10, i+2)+0.5))) % 10;
+            cout << modes[i] << " ";
         }
+        cout << endl;
         
         long long params[len];
         for (int i = 0; i < len; ++i) {
+            // cout << oa(index+i+1) << " ";
+            cout << "-- [" << oa(index+i+1) << "] ";
+            cout << "mode " << modes[i] << " index " << index + i + 1 << " base " << base << "? ";
             params[i] = get_param(ops, modes[i], index+i+1, base);
+            cout << "param " << params[i] << "! eventually " << oa(params[i]) << "." << endl;
         }
         
         index += 1 + len;
@@ -93,7 +101,7 @@ pair<int, long long> run(tviii& instance) {
             get<0>(instance) = ops;
             get<1>(instance) = index;
             get<2>(instance) = base;
-            return pair<int, long long>(0, oa(params[0]));
+            return oa(params[0]);
         } else if (op == 5) {
             if (oa(params[0]) != 0) {
                 index = oa(params[1]);
@@ -122,21 +130,21 @@ pair<int, long long> run(tviii& instance) {
     get<0>(instance) = ops;
     get<1>(instance) = index;
     get<2>(instance) = base;
-    return pair<int, long long>(-1, -1);
+    return -1;
 }
 
 int main() {
     instances.push_back(tviii(read(), 0, 0));
 
-    inputs.push_back(2);
+    inputs.push_back(1);
 
     while (true) {
-        pair<int, long long> output = run(instances.at(0));
-
-        if (output.first == -1) {
+        long long output = run(instances.at(0));
+/*
+        if (get<0>(instances.at(0)).at(get<1>(instances.at(0))) == 99) {
             break;
         }
-  
-        cout << output.second << " ";
+  */      
+        cout << output << " {" << get<1>(instances.at(0)) << "} " << endl << endl;
     }
 }
