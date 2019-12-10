@@ -62,8 +62,8 @@ long long get_param(vi& ops, int mode, int i, int base) {
 
 pair<int, long long> run(tviii& instance) {
     vi& ops = get<0>(instance);
-    long long index = get<1>(instance);
-    long long base = get<2>(instance);
+    long long& index = get<1>(instance);
+    long long& base = get<2>(instance);
 
     while (oa(index) % 100 != 99) {
         long long instruction = ops.at(index);
@@ -90,9 +90,6 @@ pair<int, long long> run(tviii& instance) {
             inputs.pop_front();
             oa(params[0]) = input;
         } else if (op == 4) {
-            get<0>(instance) = ops;
-            get<1>(instance) = index;
-            get<2>(instance) = base;
             return pair<int, long long>(0, oa(params[0]));
         } else if (op == 5) {
             if (oa(params[0]) != 0) {
@@ -119,9 +116,6 @@ pair<int, long long> run(tviii& instance) {
         }
     }
     
-    get<0>(instance) = ops;
-    get<1>(instance) = index;
-    get<2>(instance) = base;
     return pair<int, long long>(-1, -1);
 }
 
