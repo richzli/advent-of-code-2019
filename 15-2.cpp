@@ -275,9 +275,6 @@ int main() {
     }
 
     inputs.clear();
-    /*bfs.clear(); // it will now be dfs
-    statuses.clear();
-    parents.clear();*/
 
     list<int> p = path_to_origin(curr, true);
 
